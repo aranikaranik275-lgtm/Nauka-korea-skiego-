@@ -1521,6 +1521,36 @@ h1, h2, h3, h4 {
 .cat-Miejsca { color: #00695c; }
 .cat-Codzienne { color: #4527a0; }
 
+/* Recognition result */
+.pron-recognition-result {
+  margin: 12px 16px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+  min-height: 0;
+  transition: all 0.2s;
+}
+.pron-recognition-result:empty { display: none; }
+.pron-recognition-result.listening {
+  background: rgba(26,35,126,0.08);
+  color: var(--primary);
+  animation: pulse 1s infinite;
+}
+.pron-recognition-result.correct {
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 600;
+}
+.pron-recognition-result.incorrect {
+  background: #fff3e0;
+  color: #e65100;
+}
+.pron-recognition-result.error {
+  background: #fce4ec;
+  color: #c62828;
+}
+
 /* Stroke number circles */
 .stroke-num {
   display: inline-flex;

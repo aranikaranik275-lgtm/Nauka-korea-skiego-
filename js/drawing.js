@@ -298,28 +298,35 @@ const DrawingModule = (() => {
       userCtx.stroke();
     });
 
-    // Compare pixels (sample grid for performance)
+    // Compare pixels using F1 score (precision × recall)
+    // Precision: ile z tego co narysował user jest na literze referencyjnej
+    // Recall:    ile z litery referencyjnej user pokrył
+    // F1 karze za losowe mazanie (niska precision) i za niepokrycie litery (niski recall)
     const refData = refCtx.getImageData(0, 0, size, size).data;
     const userData = userCtx.getImageData(0, 0, size, size).data;
 
     let refWhite = 0;
+    let userWhite = 0;
     let overlap = 0;
-    const step = 2; // sample every 2px for performance
+    const step = 2;
 
     for (let y = 0; y < size; y += step) {
       for (let x = 0; x < size; x += step) {
         const idx = (y * size + x) * 4;
         const refBright = refData[idx] > 128;
         const userBright = userData[idx] > 128;
-        if (refBright) {
-          refWhite++;
-          if (userBright) overlap++;
-        }
+        if (refBright) refWhite++;
+        if (userBright) userWhite++;
+        if (refBright && userBright) overlap++;
       }
     }
 
-    if (refWhite === 0) return 0;
-    return Math.min(100, Math.round((overlap / refWhite) * 150)); // multiplier to be generous
+    if (refWhite === 0 || userWhite === 0) return 0;
+    const precision = overlap / userWhite;
+    const recall = overlap / refWhite;
+    if (precision + recall === 0) return 0;
+    const f1 = (2 * precision * recall) / (precision + recall);
+    return Math.round(f1 * 100);
   }
 
   function showScore(score) {

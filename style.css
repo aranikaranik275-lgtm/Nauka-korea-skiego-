@@ -77,6 +77,47 @@ body {
 .track-info h2 { font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .track-info p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem; }
 
+.verdict-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.verdict-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid;
+  background: transparent;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+  line-height: 1;
+}
+.verdict-btn.reject { border-color: #e94560; color: #e94560; }
+.verdict-btn.like   { border-color: #2ecc71; color: #2ecc71; }
+.verdict-btn.reject:hover { background: #e94560; color: white; transform: scale(1.1); }
+.verdict-btn.like:hover   { background: #2ecc71; color: white; transform: scale(1.1); }
+.verdict-btn.reject.active { background: #e94560; color: white; }
+.verdict-btn.like.active   { background: #2ecc71; color: white; }
+
+.verdict-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  min-width: 60px;
+  text-align: center;
+}
+
+/* swipe animation */
+.album-art { transition: transform 0.2s, opacity 0.2s; touch-action: pan-y; }
+.album-art.swipe-left  { transform: translateX(-60px) rotate(-8deg); opacity: 0.5; }
+.album-art.swipe-right { transform: translateX(60px)  rotate(8deg);  opacity: 0.5; }
+
+/* liked indicator in playlist */
+.playlist-item .liked-icon { color: #2ecc71; font-size: 0.8rem; }
+
 .progress-container {
   display: flex;
   align-items: center;

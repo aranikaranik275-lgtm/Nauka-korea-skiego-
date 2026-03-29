@@ -138,6 +138,9 @@
         <button class="tab-btn active" id="tab-consonants" onclick="AlphabetModule.showTab('consonants')">
           Spółgłoski (14)
         </button>
+        <button class="tab-btn" id="tab-doubles" onclick="AlphabetModule.showTab('doubles')">
+          Podwójne (5)
+        </button>
         <button class="tab-btn" id="tab-vowels" onclick="AlphabetModule.showTab('vowels')">
           Samogłoski (10)
         </button>
@@ -244,7 +247,9 @@
           <label for="quiz-source-select" style="font-size:0.85rem;color:var(--text-secondary);display:block;margin-bottom:6px;text-align:center;">Zakres pytań:</label>
           <select id="quiz-source-select" class="btn btn-secondary" style="cursor:pointer;padding:10px 16px;">
             <option value="both">Spółgłoski + Samogłoski</option>
+            <option value="all">Wszystko (z podwójnymi)</option>
             <option value="consonants">Tylko spółgłoski</option>
+            <option value="doubles">Tylko podwójne</option>
             <option value="vowels">Tylko samogłoski</option>
           </select>
         </div>
@@ -392,6 +397,8 @@
         <div id="pron-chars-content">
           <p class="section-title">Spółgłoski</p>
           <div class="pron-grid" id="pron-consonants-grid"></div>
+          <p class="section-title" style="margin-top:16px;">Spółgłoski podwójne</p>
+          <div class="pron-grid" id="pron-doubles-grid"></div>
           <p class="section-title" style="margin-top:16px;">Samogłoski</p>
           <div class="pron-grid" id="pron-vowels-grid"></div>
         </div>

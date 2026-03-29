@@ -12,6 +12,7 @@ const QuizModule = (() => {
 
   const ALL_CHARS = () => [
     ...HANGUL_DATA.consonants,
+    ...HANGUL_DATA.doubleConsonants,
     ...HANGUL_DATA.vowels
   ];
 
@@ -78,8 +79,10 @@ const QuizModule = (() => {
   function getSourceChars() {
     const val = document.getElementById('quiz-source-select').value;
     if (val === 'consonants') return HANGUL_DATA.consonants;
+    if (val === 'doubles') return HANGUL_DATA.doubleConsonants;
     if (val === 'vowels') return HANGUL_DATA.vowels;
-    return ALL_CHARS();
+    if (val === 'all') return ALL_CHARS();
+    return [...HANGUL_DATA.consonants, ...HANGUL_DATA.vowels];
   }
 
   function generateQuestions() {

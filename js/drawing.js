@@ -14,6 +14,7 @@ const DrawingModule = (() => {
 
   const ALL_CHARS = () => [
     ...HANGUL_DATA.consonants,
+    ...HANGUL_DATA.doubleConsonants,
     ...HANGUL_DATA.vowels
   ];
 

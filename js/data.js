@@ -172,6 +172,79 @@ const HANGUL_DATA = {
     }
   ],
 
+  doubleConsonants: [
+    {
+      char: 'ㄲ',
+      name: '쌍기역',
+      romanization: 'kk',
+      description: 'Napięte K (된소리) — wymawiane z napięciem gardła, bez wydechu powietrza. Różni się od ㄱ (słabe) i ㅋ (z wydechem).',
+      strokes: [
+        { points: [[11,25],[39,25]] },
+        { points: [[39,25],[39,80]] },
+        { points: [[61,25],[89,25]] },
+        { points: [[89,25],[89,80]] }
+      ]
+    },
+    {
+      char: 'ㄸ',
+      name: '쌍디귿',
+      romanization: 'tt',
+      description: 'Napięte T (된소리) — wymawiane z napięciem, bez wydechu. Różni się od ㄷ (słabe) i ㅌ (z wydechem).',
+      strokes: [
+        { points: [[11,20],[39,20]] },
+        { points: [[11,20],[11,80]] },
+        { points: [[11,80],[39,80]] },
+        { points: [[61,20],[89,20]] },
+        { points: [[61,20],[61,80]] },
+        { points: [[61,80],[89,80]] }
+      ]
+    },
+    {
+      char: 'ㅃ',
+      name: '쌍비읍',
+      romanization: 'pp',
+      description: 'Napięte P (된소리) — wymawiane z napięciem warg, bez wydechu. Różni się od ㅂ (słabe) i ㅍ (z wydechem).',
+      strokes: [
+        { points: [[15,20],[15,80]] },
+        { points: [[35,20],[35,80]] },
+        { points: [[15,20],[35,20]] },
+        { points: [[15,52],[35,52]] },
+        { points: [[15,80],[35,80]] },
+        { points: [[65,20],[65,80]] },
+        { points: [[85,20],[85,80]] },
+        { points: [[65,20],[85,20]] },
+        { points: [[65,52],[85,52]] },
+        { points: [[65,80],[85,80]] }
+      ]
+    },
+    {
+      char: 'ㅆ',
+      name: '쌍시옷',
+      romanization: 'ss',
+      description: 'Napięte S (된소리) — mocniejsze, bardziej naprężone niż ㅅ. Często słyszane w słowie 있어요 (iseoyo).',
+      strokes: [
+        { points: [[25,15],[13,80]] },
+        { points: [[25,15],[37,80]] },
+        { points: [[75,15],[63,80]] },
+        { points: [[75,15],[87,80]] }
+      ]
+    },
+    {
+      char: 'ㅉ',
+      name: '쌍지읒',
+      romanization: 'jj',
+      description: 'Napięte DŻ (된소리) — wymawiane z napięciem, bez wydechu. Różni się od ㅈ (słabe) i ㅊ (z wydechem).',
+      strokes: [
+        { points: [[11,30],[39,30]] },
+        { points: [[25,30],[14,80]] },
+        { points: [[25,30],[36,80]] },
+        { points: [[61,30],[89,30]] },
+        { points: [[75,30],[64,80]] },
+        { points: [[75,30],[86,80]] }
+      ]
+    }
+  ],
+
   vowels: [
     {
       char: 'ㅏ',

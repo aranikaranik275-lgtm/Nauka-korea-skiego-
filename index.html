@@ -420,7 +420,13 @@
             <button class="btn btn-secondary btn-sm" onclick="PronunciationModule.nextChar()">Następny ›</button>
           </div>
           <div style="text-align:center;margin-top:12px;">
-            <button class="btn btn-accent btn-sm" onclick="PronunciationModule.toggleAutoPlay()" id="pron-autoplay-btn">
+            <button class="btn btn-accent" id="pron-record-btn" onclick="PronunciationModule.startRecognition()">
+              🎤 Nagraj wymowę
+            </button>
+          </div>
+          <div id="pron-recognition-result" class="pron-recognition-result"></div>
+          <div style="text-align:center;margin-top:8px;">
+            <button class="btn btn-secondary btn-sm" onclick="PronunciationModule.toggleAutoPlay()" id="pron-autoplay-btn">
               ▶ Auto-odtwarzanie
             </button>
           </div>

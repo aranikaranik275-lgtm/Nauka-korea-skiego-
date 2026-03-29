@@ -10,6 +10,7 @@ const PronunciationModule = (() => {
   let koreanVoice = null;
   let currentUtterance = null;
   let listenedCount = 0;
+  let activeRecognition = null;
 
   function init() {
     checkTTS();
@@ -161,6 +162,82 @@ const PronunciationModule = (() => {
     charEl.textContent = item.text;
     infoEl.textContent = item.info;
     charEl.classList.remove('speaking');
+    // Reset recognition result
+    const resultEl = document.getElementById('pron-recognition-result');
+    if (resultEl) { resultEl.className = 'pron-recognition-result'; resultEl.textContent = ''; }
+    const btn = document.getElementById('pron-record-btn');
+    if (btn) { btn.textContent = '🎤 Nagraj wymowę'; btn.disabled = false; }
+  }
+
+  function startRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const resultEl = document.getElementById('pron-recognition-result');
+    const btn = document.getElementById('pron-record-btn');
+
+    if (!SpeechRecognition) {
+      resultEl.className = 'pron-recognition-result error';
+      resultEl.textContent = '⚠ Rozpoznawanie mowy niedostępne. Użyj Chrome lub Edge na Androidzie.';
+      return;
+    }
+    if (practiceItems.length === 0) return;
+
+    // Stop ongoing recognition
+    if (activeRecognition) { activeRecognition.abort(); activeRecognition = null; }
+
+    const item = practiceItems[practiceIdx];
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 5;
+    activeRecognition = recognition;
+
+    btn.textContent = '🔴 Nagrywam...';
+    btn.disabled = true;
+    resultEl.className = 'pron-recognition-result listening';
+    resultEl.textContent = '🎙 Słucham… mów teraz';
+
+    recognition.onresult = (event) => {
+      const alternatives = Array.from(event.results[0]).map(r => r.transcript.trim());
+      const expected = item.text.trim();
+      const matched = alternatives.some(r => r === expected || r.replace(/\s/g, '') === expected.replace(/\s/g, ''));
+      btn.textContent = '🎤 Nagraj wymowę';
+      btn.disabled = false;
+      activeRecognition = null;
+      if (matched) {
+        resultEl.className = 'pron-recognition-result correct';
+        resultEl.textContent = '✓ Świetnie! Rozpoznano: ' + alternatives[0];
+      } else {
+        resultEl.className = 'pron-recognition-result incorrect';
+        resultEl.textContent = '✗ Rozpoznano: „' + alternatives[0] + '"  (oczekiwano: ' + expected + ')';
+      }
+    };
+
+    recognition.onerror = (event) => {
+      btn.textContent = '🎤 Nagraj wymowę';
+      btn.disabled = false;
+      activeRecognition = null;
+      const msgs = {
+        'not-allowed': 'Brak dostępu do mikrofonu — zezwól w przeglądarce',
+        'no-speech': 'Nie wykryto mowy — spróbuj mówić głośniej',
+        'network': 'Brak internetu — rozpoznawanie wymaga połączenia',
+        'aborted': ''
+      };
+      const msg = msgs[event.error] || ('Błąd: ' + event.error);
+      if (msg) { resultEl.className = 'pron-recognition-result error'; resultEl.textContent = '⚠ ' + msg; }
+    };
+
+    recognition.onend = () => {
+      if (activeRecognition === recognition) activeRecognition = null;
+      btn.textContent = '🎤 Nagraj wymowę';
+      btn.disabled = false;
+      if (resultEl.className.includes('listening')) {
+        resultEl.className = 'pron-recognition-result error';
+        resultEl.textContent = '⚠ Nie wykryto mowy. Spróbuj ponownie.';
+      }
+    };
+
+    recognition.start();
   }
 
   function speakItem(el, text) {
@@ -286,6 +363,7 @@ const PronunciationModule = (() => {
     prevChar,
     nextChar,
     toggleAutoPlay,
+    startRecognition,
     getScore
   };
 })();

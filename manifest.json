@@ -1,0 +1,45 @@
+{
+  "name": "Nauka Koreańskiego",
+  "short_name": "Korean",
+  "description": "Nauka języka koreańskiego dla początkujących - alfabet Hangul, quiz, karty, wymowa",
+  "start_url": "/Nauka-korea-skiego-/",
+  "display": "standalone",
+  "background_color": "#1a237e",
+  "theme_color": "#1a237e",
+  "orientation": "portrait-primary",
+  "lang": "pl",
+  "categories": ["education", "language"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Alfabet",
+      "url": "/Nauka-korea-skiego-/#alphabet",
+      "description": "Ucz się alfabetu Hangul"
+    },
+    {
+      "name": "Quiz",
+      "url": "/Nauka-korea-skiego-/#quiz",
+      "description": "Przetestuj swoją wiedzę"
+    }
+  ]
+}

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a237e">
+  <meta name="description" content="Nauka języka koreańskiego dla początkujących - alfabet Hangul, quiz, fiszki, wymowa">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Korean">
+
+  <title>Nauka Koreańskiego</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ========================
+         HOME SCREEN
+    ========================= -->
+    <section id="screen-home" class="screen active" role="main">
+      <div class="home-header">
+        <div class="app-icon">한</div>
+        <h2>Nauka Koreańskiego</h2>
+        <p>Poznaj alfabet Hangul od podstaw</p>
+      </div>
+
+      <div class="overall-progress" id="overall-progress-section">
+        <div class="progress-label">
+          <span>Ogólny postęp</span>
+          <span id="overall-pct">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="overall-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="modules-grid" role="list">
+        <button class="module-card" onclick="App.navigate('alphabet')" role="listitem" aria-label="Moduł Alfabet">
+          <div class="module-icon blue">🔤</div>
+          <div class="module-info">
+            <h3>Alfabet</h3>
+            <p>Spółgłoski i samogłoski Hangul</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill blue" id="progress-alphabet" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          <span class="module-arrow">›</span>
+        </button>
+
+        <button class="module-card" onclick="App.navigate('drawing')" role="listitem" aria-label="Moduł Pisanie">
+          <div class="module-icon red">✏️</div>
+          <div class="module-info">
+            <h3>Pisanie</h3>
+            <p>Ćwicz kreślenie znaków</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill red" id="progress-drawing" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          <span class="module-arrow">›</span>
+        </button>
+
+        <button class="module-card" onclick="App.navigate('quiz')" role="listitem" aria-label="Moduł Quiz">
+          <div class="module-icon green">🎯</div>
+          <div class="module-info">
+            <h3>Quiz</h3>
+            <p>Sprawdź swoją wiedzę</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill green" id="progress-quiz" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          <span class="module-arrow">›</span>
+        </button>
+
+        <button class="module-card" onclick="App.navigate('flashcards')" role="listitem" aria-label="Moduł Słownictwo">
+          <div class="module-icon orange">📚</div>
+          <div class="module-info">
+            <h3>Słownictwo</h3>
+            <p>Fiszki z polskim tłumaczeniem</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill orange" id="progress-flashcards" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          <span class="module-arrow">›</span>
+        </button>
+
+        <button class="module-card" onclick="App.navigate('pronunciation')" role="listitem" aria-label="Moduł Wymowa">
+          <div class="module-icon purple">🔊</div>
+          <div class="module-info">
+            <h3>Wymowa</h3>
+            <p>Posłuchaj koreańskiej wymowy</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill" style="background:#9c27b0" id="progress-pronunciation"></div>
+              </div>
+            </div>
+          </div>
+          <span class="module-arrow">›</span>
+        </button>
+      </div>
+
+      <div style="padding: 8px 16px 24px; display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn btn-secondary btn-sm" onclick="App.toggleTheme()" id="theme-toggle-btn">🌙 Ciemny motyw</button>
+      </div>
+    </section>
+
+    <!-- ========================
+         ALPHABET SCREEN
+    ========================= -->
+    <section id="screen-alphabet" class="screen" role="main">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="App.navigate('home')" aria-label="Powrót">‹</button>
+        <h1>Alfabet Hangul</h1>
+        <div class="nav-actions">
+          <button class="nav-btn" onclick="AlphabetModule.resetAll()" title="Resetuj postęp" aria-label="Resetuj postęp">↺</button>
+        </div>
+      </div>
+
+      <div class="alphabet-tabs">
+        <button class="tab-btn active" id="tab-consonants" onclick="AlphabetModule.showTab('consonants')">
+          Spółgłoski (14)
+        </button>
+        <button class="tab-btn" id="tab-vowels" onclick="AlphabetModule.showTab('vowels')">
+          Samogłoski (10)
+        </button>
+      </div>
+
+      <!-- Grid view -->
+      <div id="alphabet-grid-view" class="alphabet-grid-container">
+        <div class="alphabet-grid" id="alphabet-grid"></div>
+      </div>
+
+      <!-- Detail view -->
+      <div id="alphabet-detail-view" class="char-detail hidden">
+        <div class="char-detail-header">
+          <div class="char-display" id="detail-char">ㄱ</div>
+          <div class="char-detail-info">
+            <h2 id="detail-name">기역</h2>
+            <span class="romanization-badge" id="detail-roman">g/k</span>
+            <p id="detail-desc">Opis znaku</p>
+          </div>
+        </div>
+
+        <div class="stroke-section">
+          <h3>Kolejność kresek</h3>
+          <div class="stroke-canvas-wrapper">
+            <canvas id="stroke-canvas" width="240" height="240"></canvas>
+          </div>
+          <p class="stroke-indicator" id="stroke-indicator">Kreska 1 z 2</p>
+          <div class="stroke-controls">
+            <button class="btn btn-secondary btn-sm" onclick="AlphabetModule.prevStroke()" id="stroke-prev">‹ Poprzednia</button>
+            <button class="btn btn-primary btn-sm" onclick="AlphabetModule.playAnimation()" id="stroke-play">▶ Animuj</button>
+            <button class="btn btn-secondary btn-sm" onclick="AlphabetModule.nextStroke()" id="stroke-next">Następna ›</button>
+          </div>
+        </div>
+
+        <button class="mark-learned-btn" id="mark-learned-btn" onclick="AlphabetModule.toggleLearned()">
+          ✓ Oznacz jako nauczone
+        </button>
+
+        <button class="btn btn-secondary" style="width:100%;margin-bottom:16px;" onclick="AlphabetModule.showGrid()">
+          ‹ Powrót do listy
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================
+         DRAWING SCREEN
+    ========================= -->
+    <section id="screen-drawing" class="screen" role="main">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="App.navigate('home')" aria-label="Powrót">‹</button>
+        <h1>Pisanie</h1>
+      </div>
+
+      <div class="drawing-options">
+        <button class="option-btn active" id="draw-opt-a" onclick="DrawingModule.setMode('trace')">
+          A: Odrysuj
+        </button>
+        <button class="option-btn" id="draw-opt-b" onclick="DrawingModule.setMode('scratch')">
+          B: Od zera
+        </button>
+      </div>
+
+      <div class="drawing-char-selector">
+        <label>Znak:</label>
+        <div class="char-select-scroll" id="drawing-char-scroll"></div>
+      </div>
+
+      <div class="drawing-canvas-area">
+        <canvas id="drawing-canvas" width="300" height="300"></canvas>
+
+        <div class="drawing-controls">
+          <button class="btn btn-secondary btn-sm" onclick="DrawingModule.undo()" id="draw-undo-btn">↩ Cofnij</button>
+          <button class="btn btn-secondary btn-sm" onclick="DrawingModule.clear()">🗑 Wyczyść</button>
+          <button class="btn btn-primary" onclick="DrawingModule.check()">✓ Sprawdź</button>
+        </div>
+
+        <div class="drawing-score" id="drawing-score">
+          <div class="score-circle" id="score-circle">
+            <span id="score-pct-text">0%</span>
+          </div>
+          <div class="score-msg" id="score-msg"></div>
+          <p id="score-detail" style="font-size:0.85rem;color:var(--text-secondary);margin-top:4px;"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================
+         QUIZ SCREEN
+    ========================= -->
+    <section id="screen-quiz" class="screen" role="main">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="App.navigate('home')" aria-label="Powrót">‹</button>
+        <h1>Quiz</h1>
+      </div>
+
+      <!-- Start screen -->
+      <div class="quiz-start" id="quiz-start">
+        <div style="font-size:4rem;">🎯</div>
+        <h2 style="font-size:1.4rem;">Sprawdź swoją wiedzę</h2>
+        <p style="color:var(--text-secondary);text-align:center;max-width:280px;">
+          10 pytań - rozpoznaj znaki Hangul i ich wymowę
+        </p>
+        <div>
+          <label for="quiz-source-select" style="font-size:0.85rem;color:var(--text-secondary);display:block;margin-bottom:6px;text-align:center;">Zakres pytań:</label>
+          <select id="quiz-source-select" class="btn btn-secondary" style="cursor:pointer;padding:10px 16px;">
+            <option value="both">Spółgłoski + Samogłoski</option>
+            <option value="consonants">Tylko spółgłoski</option>
+            <option value="vowels">Tylko samogłoski</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" style="padding:14px 36px;font-size:1rem;" onclick="QuizModule.start()">
+          ▶ Rozpocznij quiz
+        </button>
+      </div>
+
+      <!-- Quiz in progress -->
+      <div id="quiz-game" class="hidden" style="display:none;flex-direction:column;flex:1;">
+        <div class="quiz-header">
+          <div class="quiz-progress-row">
+            <span id="quiz-q-counter">Pytanie 1 / 10</span>
+            <span class="quiz-score-badge" id="quiz-score-badge">0 / 0</span>
+          </div>
+          <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="quiz-question-area">
+          <p class="quiz-type-label" id="quiz-type-label">Którą literę widzisz?</p>
+          <div class="quiz-char-display" id="quiz-char-display">ㄱ</div>
+          <div class="quiz-options" id="quiz-options">
+            <button class="quiz-option" onclick="QuizModule.answer(0)">a</button>
+            <button class="quiz-option" onclick="QuizModule.answer(1)">b</button>
+            <button class="quiz-option" onclick="QuizModule.answer(2)">c</button>
+            <button class="quiz-option" onclick="QuizModule.answer(3)">d</button>
+          </div>
+          <div class="quiz-feedback" id="quiz-feedback"></div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="quiz-results" id="quiz-results">
+        <div class="results-emoji" id="results-emoji">🎉</div>
+        <div class="results-score-big" id="results-score-big">0/10</div>
+        <div class="results-label" id="results-label">Wynik</div>
+        <p id="results-msg" style="color:var(--text-secondary);text-align:center;max-width:260px;"></p>
+        <button class="btn btn-primary" style="padding:12px 28px;" onclick="QuizModule.restart()">
+          ↺ Zagraj ponownie
+        </button>
+        <button class="btn btn-secondary" onclick="App.navigate('home')">
+          ⌂ Strona główna
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================
+         FLASHCARDS SCREEN
+    ========================= -->
+    <section id="screen-flashcards" class="screen" role="main">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="App.navigate('home')" aria-label="Powrót">‹</button>
+        <h1>Słownictwo</h1>
+        <div class="nav-actions">
+          <button class="nav-btn" onclick="FlashcardsModule.resetProgress()" title="Resetuj postęp" aria-label="Resetuj postęp">↺</button>
+        </div>
+      </div>
+
+      <div class="flashcards-filter">
+        <div class="filter-scroll" id="flashcards-filter-scroll"></div>
+      </div>
+
+      <div class="flashcards-progress-row">
+        <span id="fc-progress-text">0 znanych</span>
+        <span id="fc-deck-text">0 pozostało</span>
+      </div>
+
+      <div class="flashcards-area">
+        <!-- Active card deck -->
+        <div class="flashcard-deck" id="flashcard-deck">
+          <div class="flashcard" id="flashcard" onclick="FlashcardsModule.flip()">
+            <div class="flashcard-face flashcard-front">
+              <span class="flashcard-category" id="fc-category">Kategoria</span>
+              <span class="flashcard-korean" id="fc-korean">안녕하세요</span>
+              <span class="flashcard-hint">Kliknij, aby zobaczyć tłumaczenie</span>
+            </div>
+            <div class="flashcard-face flashcard-back">
+              <span class="flashcard-romanization" id="fc-romanization">annyeonghaseyo</span>
+              <span class="flashcard-polish" id="fc-polish">Dzień dobry / Cześć (grzecznie)</span>
+              <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); FlashcardsModule.speak()" style="margin-top:8px;">
+                🔊 Wymowa
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="flashcards-empty" id="flashcards-empty">
+          <div style="font-size:3rem;margin-bottom:12px;">📭</div>
+          <p>Brak fiszek w tej kategorii.</p>
+        </div>
+
+        <!-- Done state -->
+        <div class="flashcards-done" id="flashcards-done">
+          <div style="font-size:4rem;">🎊</div>
+          <h3>Talia ukończona!</h3>
+          <p id="fc-done-stats" style="color:var(--text-secondary);"></p>
+          <button class="btn btn-primary" onclick="FlashcardsModule.restart()">↺ Zacznij od nowa</button>
+          <button class="btn btn-secondary" onclick="FlashcardsModule.restartUnknown()">📖 Powtórz nieznane</button>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flashcard-actions" id="fc-actions">
+          <button class="fc-action-btn fc-dontknow" onclick="FlashcardsModule.dontKnow()">
+            ✗ Nie znam
+          </button>
+          <button class="fc-action-btn fc-know" onclick="FlashcardsModule.know()">
+            ✓ Znam
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================
+         PRONUNCIATION SCREEN
+    ========================= -->
+    <section id="screen-pronunciation" class="screen" role="main">
+      <div class="nav-bar">
+        <button class="back-btn" onclick="App.navigate('home')" aria-label="Powrót">‹</button>
+        <h1>Wymowa</h1>
+      </div>
+
+      <div class="pronunciation-tabs">
+        <button class="tab-btn active" id="pron-tab-chars" onclick="PronunciationModule.showTab('chars')">
+          Alfabet
+        </button>
+        <button class="tab-btn" id="pron-tab-vocab" onclick="PronunciationModule.showTab('vocab')">
+          Słownictwo
+        </button>
+        <button class="tab-btn" id="pron-tab-practice" onclick="PronunciationModule.showTab('practice')">
+          Ćwiczenie
+        </button>
+      </div>
+
+      <div class="pron-area" id="pron-area">
+        <!-- TTS Unavailable warning -->
+        <div class="tts-unavailable" id="tts-unavailable">
+          ⚠️ Synteza mowy koreańskiej może nie być dostępna na tym urządzeniu.
+          Na Android/iOS zainstaluj pakiet językowy koreański w ustawieniach systemowych.
+        </div>
+
+        <!-- Chars tab -->
+        <div id="pron-chars-content">
+          <p class="section-title">Spółgłoski</p>
+          <div class="pron-grid" id="pron-consonants-grid"></div>
+          <p class="section-title" style="margin-top:16px;">Samogłoski</p>
+          <div class="pron-grid" id="pron-vowels-grid"></div>
+        </div>
+
+        <!-- Vocab tab -->
+        <div id="pron-vocab-content" class="hidden">
+          <div class="pron-vocab-grid" id="pron-vocab-grid"></div>
+        </div>
+
+        <!-- Practice tab -->
+        <div id="pron-practice-content" class="hidden">
+          <div class="pron-char-display">
+            <span class="pron-char-big" id="pron-practice-char" onclick="PronunciationModule.speakCurrent()">한</span>
+            <div class="pron-info" id="pron-practice-info">kliknij, aby usłyszeć</div>
+          </div>
+          <div class="pron-controls">
+            <button class="btn btn-secondary btn-sm" onclick="PronunciationModule.prevChar()">‹ Poprzedni</button>
+            <button class="btn btn-primary" onclick="PronunciationModule.speakCurrent()">🔊 Posłuchaj</button>
+            <button class="btn btn-secondary btn-sm" onclick="PronunciationModule.nextChar()">Następny ›</button>
+          </div>
+          <div style="text-align:center;margin-top:12px;">
+            <button class="btn btn-accent btn-sm" onclick="PronunciationModule.toggleAutoPlay()" id="pron-autoplay-btn">
+              ▶ Auto-odtwarzanie
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /#app -->
+
+  <!-- Toast container -->
+  <div id="toast-container" role="alert" aria-live="polite"></div>
+
+  <!-- PWA Install Banner -->
+  <div id="install-banner" role="complementary">
+    <div class="install-icon">📱</div>
+    <div class="install-text">
+      <h4>Zainstaluj aplikację</h4>
+      <p>Dodaj do ekranu głównego dla łatwego dostępu</p>
+    </div>
+    <div class="install-actions">
+      <button class="btn btn-primary btn-sm" onclick="App.installPWA()">Zainstaluj</button>
+      <button class="install-close" onclick="App.dismissInstall()" aria-label="Zamknij">✕</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/alphabet.js"></script>
+  <script src="js/drawing.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/flashcards.js"></script>
+  <script src="js/pronunciation.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

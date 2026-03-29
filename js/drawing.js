@@ -168,11 +168,20 @@ const DrawingModule = (() => {
     const size = getCanvasSize();
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.font = `bold ${size * 0.82}px "Noto Sans KR", serif`;
-    ctx.fillStyle = '#1a237e';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(currentChar.char, size / 2, size / 2);
+    ctx.strokeStyle = '#1a237e';
+    ctx.lineWidth = Math.max(8, size * 0.07);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    currentChar.strokes.forEach(stroke => {
+      const pts = stroke.points;
+      if (!pts || pts.length < 2) return;
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0] * size / 100, pts[0][1] * size / 100);
+      for (let i = 1; i < pts.length; i++) {
+        ctx.lineTo(pts[i][0] * size / 100, pts[i][1] * size / 100);
+      }
+      ctx.stroke();
+    });
     ctx.restore();
   }
 
@@ -260,20 +269,28 @@ const DrawingModule = (() => {
 
   function computeScore() {
     const size = getCanvasSize();
-    // Create offscreen canvas for reference
+    // Reference canvas: render from stroke data (same as trace guide — no font dependency)
     const refCanvas = document.createElement('canvas');
     refCanvas.width = size;
     refCanvas.height = size;
     const refCtx = refCanvas.getContext('2d');
 
-    // Draw reference char large
     refCtx.fillStyle = '#000000';
     refCtx.fillRect(0, 0, size, size);
-    refCtx.font = `bold ${size * 0.8}px "Noto Sans KR", serif`;
-    refCtx.fillStyle = '#ffffff';
-    refCtx.textAlign = 'center';
-    refCtx.textBaseline = 'middle';
-    refCtx.fillText(currentChar.char, size / 2, size / 2);
+    refCtx.strokeStyle = '#ffffff';
+    refCtx.lineWidth = Math.max(10, size * 0.07);
+    refCtx.lineCap = 'round';
+    refCtx.lineJoin = 'round';
+    currentChar.strokes.forEach(stroke => {
+      const pts = stroke.points;
+      if (!pts || pts.length < 2) return;
+      refCtx.beginPath();
+      refCtx.moveTo(pts[0][0] * size / 100, pts[0][1] * size / 100);
+      for (let i = 1; i < pts.length; i++) {
+        refCtx.lineTo(pts[i][0] * size / 100, pts[i][1] * size / 100);
+      }
+      refCtx.stroke();
+    });
 
     // Create offscreen canvas for user drawing
     const userCanvas = document.createElement('canvas');

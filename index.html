@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="description" content="Muzyka PWA - odtwarzacz muzyki offline" />
+  <title>Muzyka PWA</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <h1 class="logo">&#9835; Muzyka</h1>
+      <button id="install-btn" class="install-btn" hidden>Zainstaluj</button>
+    </header>
+
+    <main>
+      <section class="player-section">
+        <div class="album-art" id="album-art">
+          <div class="album-placeholder">&#9835;</div>
+        </div>
+        <div class="track-info">
+          <h2 id="track-title">Wybierz utwór</h2>
+          <p id="track-artist">---</p>
+        </div>
+        <div class="progress-container">
+          <span id="current-time">0:00</span>
+          <input type="range" id="progress" value="0" min="0" max="100" step="0.1" />
+          <span id="duration">0:00</span>
+        </div>
+        <div class="controls">
+          <button id="shuffle-btn" class="ctrl-btn" title="Losowo">&#8630;</button>
+          <button id="prev-btn" class="ctrl-btn" title="Poprzedni">&#9664;&#9664;</button>
+          <button id="play-btn" class="ctrl-btn play" title="Odtwórz/Pauza">&#9654;</button>
+          <button id="next-btn" class="ctrl-btn" title="Następny">&#9654;&#9654;</button>
+          <button id="repeat-btn" class="ctrl-btn" title="Powtarzaj">&#8631;</button>
+        </div>
+        <div class="volume-container">
+          <span>&#128265;</span>
+          <input type="range" id="volume" value="80" min="0" max="100" />
+          <span id="volume-val">80%</span>
+        </div>
+      </section>
+
+      <section class="playlist-section">
+        <div class="playlist-header">
+          <h3>Playlista</h3>
+          <label class="add-btn" for="file-input">+ Dodaj pliki</label>
+          <input type="file" id="file-input" accept="audio/*" multiple hidden />
+        </div>
+        <ul id="playlist" class="playlist"></ul>
+        <p id="empty-msg" class="empty-msg">Dodaj pliki audio aby zacząć odtwarzanie</p>
+      </section>
+    </main>
+  </div>
+
+  <audio id="audio"></audio>
+  <script src="app.js"></script>
+</body>
+</html>

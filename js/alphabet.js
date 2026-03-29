@@ -31,12 +31,13 @@ const AlphabetModule = (() => {
   }
 
   function getTotalCount() {
-    return HANGUL_DATA.consonants.length + HANGUL_DATA.vowels.length;
+    return HANGUL_DATA.consonants.length + HANGUL_DATA.doubleConsonants.length + HANGUL_DATA.vowels.length;
   }
 
   function showTab(tab) {
     currentTab = tab;
     document.getElementById('tab-consonants').classList.toggle('active', tab === 'consonants');
+    document.getElementById('tab-doubles').classList.toggle('active', tab === 'doubles');
     document.getElementById('tab-vowels').classList.toggle('active', tab === 'vowels');
     showGrid();
     renderGrid();
@@ -44,7 +45,10 @@ const AlphabetModule = (() => {
 
   function renderGrid() {
     const grid = document.getElementById('alphabet-grid');
-    const items = currentTab === 'consonants' ? HANGUL_DATA.consonants : HANGUL_DATA.vowels;
+    let items;
+    if (currentTab === 'consonants') items = HANGUL_DATA.consonants;
+    else if (currentTab === 'doubles') items = HANGUL_DATA.doubleConsonants;
+    else items = HANGUL_DATA.vowels;
     grid.innerHTML = '';
     items.forEach((item, idx) => {
       const isLearned = !!progress[item.char];

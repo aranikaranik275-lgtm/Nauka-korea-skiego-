@@ -35,7 +35,7 @@ const PronunciationModule = (() => {
   }
 
   function getScore() {
-    const total = HANGUL_DATA.consonants.length + HANGUL_DATA.vowels.length + VOCABULARY.length;
+    const total = HANGUL_DATA.consonants.length + HANGUL_DATA.doubleConsonants.length + HANGUL_DATA.vowels.length + VOCABULARY.length;
     return Math.min(100, Math.round((listenedCount / Math.max(1, total)) * 100));
   }
 
@@ -79,6 +79,7 @@ const PronunciationModule = (() => {
 
   function buildGrids() {
     buildGrid('pron-consonants-grid', HANGUL_DATA.consonants);
+    buildGrid('pron-doubles-grid', HANGUL_DATA.doubleConsonants);
     buildGrid('pron-vowels-grid', HANGUL_DATA.vowels);
   }
 
@@ -131,6 +132,10 @@ const PronunciationModule = (() => {
     // Combine all chars and vocabulary for practice
     const charItems = [
       ...HANGUL_DATA.consonants.map(c => ({
+        text: c.char,
+        info: c.romanization + ' - ' + c.description
+      })),
+      ...HANGUL_DATA.doubleConsonants.map(c => ({
         text: c.char,
         info: c.romanization + ' - ' + c.description
       })),
@@ -208,7 +213,7 @@ const PronunciationModule = (() => {
 
     // Track listened items
     listenedCount = Math.min(
-      HANGUL_DATA.consonants.length + HANGUL_DATA.vowels.length + VOCABULARY.length,
+      HANGUL_DATA.consonants.length + HANGUL_DATA.doubleConsonants.length + HANGUL_DATA.vowels.length + VOCABULARY.length,
       listenedCount + 1
     );
     saveProgress();

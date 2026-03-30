@@ -1,27 +1,22 @@
 'use strict';
-
 import { AudioManager } from './audio/audio-manager.js';
 
 const App = (() => {
-  let currentScreen = 'home';
-  let isDarkTheme = false;
   const audioManager = new AudioManager();
 
   async function init() {
-    // Zabezpieczenie HTTPS
+    [span_4](start_span)[span_5](start_span)// Zabezpieczenie HTTPS wg procedury[span_4](end_span)[span_5](end_span)
     if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-      console.warn('Aplikacja wymaga HTTPS do działania mikrofonu.');
+      console.warn('Wymagane HTTPS dla mikrofonu.');
     }
 
     await audioManager.init();
-    setupEventListeners();
-    updateProgressBars();
-    loadTheme();
+    setupListeners();
     registerSW();
   }
 
-  function setupEventListeners() {
-    const navButtons = {
+  function setupListeners() {
+    const navMap = {
       'nav-alphabet': 'alphabet',
       'nav-drawing': 'drawing',
       'nav-quiz': 'quiz',
@@ -30,75 +25,44 @@ const App = (() => {
       'back-to-home': 'home'
     };
 
-    Object.entries(navButtons).forEach(([id, screen]) => {
-      const btn = document.getElementById(id);
-      if (btn) btn.addEventListener('click', () => navigate(screen));
+    Object.entries(navMap).forEach(([id, screen]) => {
+      document.getElementById(id)?.addEventListener('click', () => navigate(screen));
     });
 
-    const themeBtn = document.getElementById('theme-toggle-btn');
-    if (themeBtn) themeBtn.addEventListener('click', () => toggleTheme());
+    document.getElementById('theme-toggle-btn')?.addEventListener('click', toggleTheme);
+    
+    document.getElementById('btn-speak-current')?.addEventListener('click', () => {
+      const text = document.getElementById('pron-practice-char').innerText;
+      audioManager.speak(text);
+    });
 
-    const speakBtn = document.getElementById('btn-speak-current');
-    if (speakBtn) {
-      speakBtn.addEventListener('click', () => {
-        const text = document.getElementById('pron-practice-char')?.textContent;
-        if (text) audioManager.speak(text);
-      });
-    }
-
-    const recordBtn = document.getElementById('pron-record-btn');
-    if (recordBtn) {
-      recordBtn.addEventListener('click', () => {
-        const resultArea = document.getElementById('pron-recognition-result');
-        if (resultArea) resultArea.innerText = "Słucham...";
-        audioManager.listen(result => {
-          if (resultArea) resultArea.innerText = "Usłyszałem: " + result;
-        });
-      });
-    }
+    document.getElementById('pron-record-btn')?.addEventListener('click', () => {
+      const res = document.getElementById('pron-recognition-result');
+      res.innerText = "Słucham...";
+      audioManager.listen(text => res.innerText = "Wynik: " + text);
+    });
   }
 
   function navigate(screen) {
-    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-    const target = document.getElementById('screen-' + screen);
-    if (target) target.classList.add('active');
-    currentScreen = screen;
-  }
-
-  function updateProgressBars() {
-    const elements = ['progress-alphabet', 'progress-drawing', 'progress-quiz', 'progress-flashcards'];
-    elements.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.width = '10%'; 
-    });
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screen)?.classList.add('active');
   }
 
   function toggleTheme() {
-    isDarkTheme = !isDarkTheme;
-    document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
-    const btn = document.getElementById('theme-toggle-btn');
-    if (btn) btn.textContent = isDarkTheme ? '☀️ Jasny motyw' : '🌙 Ciemny motyw';
-  }
-
-  function loadTheme() {
-    const theme = localStorage.getItem('theme') || 'light';
-    if (theme === 'dark') toggleTheme();
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
   }
 
   function registerSW() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.warn(err));
+      navigator.serviceWorker.register('./sw.js');
     }
   }
 
   return { init };
 })();
 
-document.addEventListener('DOMContentLoaded', () => App.init());
-    
-    if (screen !== 'home') {
-      history.pushState({ screen }, '', '#' + screen);
-    } else {
+document.addEventListener('DOMContentLoaded', App.init);
       history.pushState({ screen }, '', window.location.pathname);
     }
 

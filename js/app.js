@@ -1,47 +1,26 @@
 'use strict';
 
-// 1. Import managera audio (zgodnie z procedurą)
 import { AudioManager } from './audio/audio-manager.js';
 
 const App = (() => {
   let currentScreen = 'home';
-  let deferredInstallPrompt = null;
-  let modulesInitialized = {};
   let isDarkTheme = false;
-  
-  // Instancja managera audio
   const audioManager = new AudioManager();
 
-  // =============================
-  // Initialization
-  // =============================
   async function init() {
-    [span_5](start_span)// Zabezpieczenie HTTPS dla mikrofonu[span_5](end_span)
+    // Zabezpieczenie HTTPS
     if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
       console.warn('Aplikacja wymaga HTTPS do działania mikrofonu.');
     }
 
-    [span_6](start_span)// Inicjalizacja dźwięku[span_6](end_span)
     await audioManager.init();
-    
-    registerSW();
-    loadTheme();
+    setupEventListeners();
     updateProgressBars();
-    setupInstallPrompt();
-    setupBackButton();
-    setupEventListeners(); [span_7](start_span)// Nowa funkcja obsługująca kliknięcia[span_7](end_span)
-
-    const hash = window.location.hash.replace('#', '');
-    if (hash && ['alphabet', 'drawing', 'quiz', 'flashcards', 'pronunciation'].includes(hash)) {
-      navigate(hash);
-    }
+    loadTheme();
+    registerSW();
   }
 
-  // =============================
-  [span_8](start_span)// Event Listeners (Zamiast onclick)[span_8](end_span)
-  // =============================
   function setupEventListeners() {
-    // Nawigacja główna
     const navButtons = {
       'nav-alphabet': 'alphabet',
       'nav-drawing': 'drawing',
@@ -56,17 +35,14 @@ const App = (() => {
       if (btn) btn.addEventListener('click', () => navigate(screen));
     });
 
-    // Przełącznik motywu
     const themeBtn = document.getElementById('theme-toggle-btn');
     if (themeBtn) themeBtn.addEventListener('click', () => toggleTheme());
 
-    [span_9](start_span)// Obsługa Audio w module Wymowy (Pronunciation)[span_9](end_span)
     const speakBtn = document.getElementById('btn-speak-current');
     if (speakBtn) {
       speakBtn.addEventListener('click', () => {
-        // Pobiera tekst z elementu wyświetlającego znak
-        const textToSpeak = document.getElementById('pron-practice-char')?.textContent;
-        if (textToSpeak) audioManager.speak(textToSpeak);
+        const text = document.getElementById('pron-practice-char')?.textContent;
+        if (text) audioManager.speak(text);
       });
     }
 
@@ -75,7 +51,6 @@ const App = (() => {
       recordBtn.addEventListener('click', () => {
         const resultArea = document.getElementById('pron-recognition-result');
         if (resultArea) resultArea.innerText = "Słucham...";
-        
         audioManager.listen(result => {
           if (resultArea) resultArea.innerText = "Usłyszałem: " + result;
         });
@@ -83,31 +58,43 @@ const App = (() => {
     }
   }
 
-  // =============================
-  // Service Worker
-  // =============================
+  function navigate(screen) {
+    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById('screen-' + screen);
+    if (target) target.classList.add('active');
+    currentScreen = screen;
+  }
+
+  function updateProgressBars() {
+    const elements = ['progress-alphabet', 'progress-drawing', 'progress-quiz', 'progress-flashcards'];
+    elements.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.width = '10%'; 
+    });
+  }
+
+  function toggleTheme() {
+    isDarkTheme = !isDarkTheme;
+    document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = isDarkTheme ? '☀️ Jasny motyw' : '🌙 Ciemny motyw';
+  }
+
+  function loadTheme() {
+    const theme = localStorage.getItem('theme') || 'light';
+    if (theme === 'dark') toggleTheme();
+  }
+
   function registerSW() {
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('[App] SW registered'))
-          .catch(err => console.warn('[App] SW failed', err));
-      });
+      navigator.serviceWorker.register('./sw.js').catch(err => console.warn(err));
     }
   }
 
-  // =============================
-  // Navigation
-  // =============================
-  function navigate(screen) {
-    const validScreens = ['home', 'alphabet', 'drawing', 'quiz', 'flashcards', 'pronunciation'];
-    if (!validScreens.includes(screen)) return;
+  return { init };
+})();
 
-    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-    const targetEl = document.getElementById('screen-' + screen);
-    if (targetEl) targetEl.classList.add('active');
-
-    currentScreen = screen;
+document.addEventListener('DOMContentLoaded', () => App.init());
     
     if (screen !== 'home') {
       history.pushState({ screen }, '', '#' + screen);

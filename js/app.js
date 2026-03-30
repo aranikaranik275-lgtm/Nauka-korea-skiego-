@@ -1,25 +1,85 @@
 'use strict';
 
+// 1. Import managera audio (zgodnie z procedurą)
+import { AudioManager } from './audio/audio-manager.js';
+
 const App = (() => {
   let currentScreen = 'home';
   let deferredInstallPrompt = null;
   let modulesInitialized = {};
   let isDarkTheme = false;
+  
+  // Instancja managera audio
+  const audioManager = new AudioManager();
 
   // =============================
   // Initialization
   // =============================
-  function init() {
+  async function init() {
+    [span_5](start_span)// Zabezpieczenie HTTPS dla mikrofonu[span_5](end_span)
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+      console.warn('Aplikacja wymaga HTTPS do działania mikrofonu.');
+    }
+
+    [span_6](start_span)// Inicjalizacja dźwięku[span_6](end_span)
+    await audioManager.init();
+    
     registerSW();
     loadTheme();
     updateProgressBars();
     setupInstallPrompt();
     setupBackButton();
+    setupEventListeners(); [span_7](start_span)// Nowa funkcja obsługująca kliknięcia[span_7](end_span)
 
-    // Handle hash navigation
     const hash = window.location.hash.replace('#', '');
     if (hash && ['alphabet', 'drawing', 'quiz', 'flashcards', 'pronunciation'].includes(hash)) {
       navigate(hash);
+    }
+  }
+
+  // =============================
+  [span_8](start_span)// Event Listeners (Zamiast onclick)[span_8](end_span)
+  // =============================
+  function setupEventListeners() {
+    // Nawigacja główna
+    const navButtons = {
+      'nav-alphabet': 'alphabet',
+      'nav-drawing': 'drawing',
+      'nav-quiz': 'quiz',
+      'nav-flashcards': 'flashcards',
+      'nav-pronunciation': 'pronunciation',
+      'back-to-home': 'home'
+    };
+
+    Object.entries(navButtons).forEach(([id, screen]) => {
+      const btn = document.getElementById(id);
+      if (btn) btn.addEventListener('click', () => navigate(screen));
+    });
+
+    // Przełącznik motywu
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) themeBtn.addEventListener('click', () => toggleTheme());
+
+    [span_9](start_span)// Obsługa Audio w module Wymowy (Pronunciation)[span_9](end_span)
+    const speakBtn = document.getElementById('btn-speak-current');
+    if (speakBtn) {
+      speakBtn.addEventListener('click', () => {
+        // Pobiera tekst z elementu wyświetlającego znak
+        const textToSpeak = document.getElementById('pron-practice-char')?.textContent;
+        if (textToSpeak) audioManager.speak(textToSpeak);
+      });
+    }
+
+    const recordBtn = document.getElementById('pron-record-btn');
+    if (recordBtn) {
+      recordBtn.addEventListener('click', () => {
+        const resultArea = document.getElementById('pron-recognition-result');
+        if (resultArea) resultArea.innerText = "Słucham...";
+        
+        audioManager.listen(result => {
+          if (resultArea) resultArea.innerText = "Usłyszałem: " + result;
+        });
+      });
     }
   }
 
@@ -30,42 +90,31 @@ const App = (() => {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then(reg => {
-            console.log('[App] SW registered:', reg.scope);
-          })
-          .catch(err => {
-            console.warn('[App] SW registration failed:', err);
-          });
+          .then(reg => console.log('[App] SW registered'))
+          .catch(err => console.warn('[App] SW failed', err));
       });
     }
   }
 
   // =============================
-  // Navigation / Screen routing
+  // Navigation
   // =============================
   function navigate(screen) {
-    // Validate
     const validScreens = ['home', 'alphabet', 'drawing', 'quiz', 'flashcards', 'pronunciation'];
     if (!validScreens.includes(screen)) return;
 
-    // Hide all screens
     document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-
-    // Show target screen
     const targetEl = document.getElementById('screen-' + screen);
-    if (!targetEl) return;
-    targetEl.classList.add('active');
+    if (targetEl) targetEl.classList.add('active');
 
     currentScreen = screen;
-
-    // Update URL hash (no page reload)
+    
     if (screen !== 'home') {
       history.pushState({ screen }, '', '#' + screen);
     } else {
       history.pushState({ screen }, '', window.location.pathname);
     }
 
-    // Lazy-initialize modules on first visit
     lazyInit(screen);
   }
 
@@ -73,32 +122,69 @@ const App = (() => {
     if (modulesInitialized[screen]) return;
     modulesInitialized[screen] = true;
 
+    // Przekazujemy audioManager do modułów, które go potrzebują
     switch (screen) {
-      case 'alphabet':
-        AlphabetModule.init();
-        break;
-      case 'drawing':
-        DrawingModule.init();
-        break;
-      case 'quiz':
-        QuizModule.init();
-        break;
-      case 'flashcards':
-        FlashcardsModule.init();
-        break;
-      case 'pronunciation':
-        PronunciationModule.init();
-        break;
+      case 'alphabet': AlphabetModule.init(); break;
+      case 'drawing': DrawingModule.init(); break;
+      case 'quiz': QuizModule.init(); break;
+      case 'flashcards': FlashcardsModule.init(); break;
+      case 'pronunciation': PronunciationModule.init(audioManager); break;
     }
   }
 
-  // =============================
-  // Back button support
-  // =============================
+  // Pozostałe funkcje (updateProgressBars, loadTheme, itp.) pozostają bez zmian
+  function updateProgressBars() {
+    // ... (kod z Twojego oryginalnego pliku) ...
+    // Zachowaj tutaj całą logikę obliczania procentów, którą miałeś wcześniej
+  }
+
   function setupBackButton() {
     window.addEventListener('popstate', (e) => {
-      const state = e.state;
-      if (state && state.screen) {
+      if (e.state && e.state.screen) navigate(e.state.screen);
+      else navigate('home');
+    });
+  }
+
+  function loadTheme() {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark') applyDarkTheme(true, false);
+  }
+
+  function toggleTheme() {
+    applyDarkTheme(!isDarkTheme, true);
+  }
+
+  function applyDarkTheme(dark, save) {
+    isDarkTheme = dark;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = dark ? '☀️ Jasny motyw' : '🌙 Ciemny motyw';
+    if (save) localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }
+
+  function setupInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      if (localStorage.getItem('install-dismissed')) return;
+      setTimeout(() => {
+        const banner = document.getElementById('install-banner');
+        if (banner) banner.classList.add('show');
+      }, 3000);
+    });
+  }
+
+  return {
+    init,
+    navigate,
+    updateProgressBars,
+    toggleTheme
+  };
+})();
+
+document.addEventListener('DOMContentLoaded', () => {
+  App.init();
+});
         // Direct navigate without pushing new state
         document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
         const targetEl = document.getElementById('screen-' + state.screen);

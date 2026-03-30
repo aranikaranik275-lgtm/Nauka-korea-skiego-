@@ -48,6 +48,11 @@
           <div class="module-info">
             <h3>Alfabet</h3>
             <p>Spółgłoski i samogłoski Hangul</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill blue" id="progress-alphabet" style="width: 0%"></div>
+              </div>
+            </div>
           </div>
           <span class="module-arrow">›</span>
         </button>
@@ -57,6 +62,11 @@
           <div class="module-info">
             <h3>Pisanie</h3>
             <p>Ćwicz kreślenie znaków</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill red" id="progress-drawing" style="width: 0%"></div>
+              </div>
+            </div>
           </div>
           <span class="module-arrow">›</span>
         </button>
@@ -66,6 +76,11 @@
           <div class="module-info">
             <h3>Quiz</h3>
             <p>Sprawdź swoją wiedzę</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill green" id="progress-quiz" style="width: 0%"></div>
+              </div>
+            </div>
           </div>
           <span class="module-arrow">›</span>
         </button>
@@ -75,6 +90,11 @@
           <div class="module-info">
             <h3>Słownictwo</h3>
             <p>Fiszki z polskim tłumaczeniem</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill orange" id="progress-flashcards" style="width: 0%"></div>
+              </div>
+            </div>
           </div>
           <span class="module-arrow">›</span>
         </button>
@@ -84,6 +104,11 @@
           <div class="module-info">
             <h3>Wymowa</h3>
             <p>Posłuchaj koreańskiej wymowy</p>
+            <div class="module-progress">
+              <div class="mini-bar">
+                <div class="mini-fill" style="background:#9c27b0" id="progress-pronunciation"></div>
+              </div>
+            </div>
           </div>
           <span class="module-arrow">›</span>
         </button>
@@ -99,6 +124,29 @@
         <button class="back-btn" id="back-to-home">‹</button>
         <h1>Wymowa</h1>
       </div>
+      <div class="pron-area">
+        <div class="pron-char-display">
+          <span class="pron-char-big" id="pron-practice-char">안녕하세요</span>
+          <div class="pron-info">Kliknij poniżej, aby usłyszeć wymowę</div>
+        </div>
+        <div class="pron-controls">
+          <button class="btn btn-primary" id="btn-speak-current">🔊 Posłuchaj</button>
+        </div>
+        <div style="text-align:center;margin-top:20px;">
+          <button class="btn btn-accent" id="pron-record-btn">🎤 Nagraj wymowę</button>
+        </div>
+        <div id="pron-recognition-result" class="pron-recognition-result"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <div id="toast-container" role="alert"></div>
+
+  <script src="js/data.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
 
       <div class="pron-area" id="pron-area">
         <div class="pron-char-display">

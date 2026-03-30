@@ -4,101 +4,107 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#1a237e">
-  <meta name="description" content="Nauka języka koreańskiego dla początkujących - alfabet Hangul, quiz, fiszki, wymowa">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Korean">
-
   <title>Nauka Koreańskiego</title>
-
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="app">
-
-    <section id="screen-home" class="screen active" role="main">
+    <section id="screen-home" class="screen active">
       <div class="home-header">
         <div class="app-icon">한</div>
         <h2>Nauka Koreańskiego</h2>
         <p>Poznaj alfabet Hangul od podstaw</p>
       </div>
 
-      <div class="overall-progress" id="overall-progress-section">
+      <div class="overall-progress">
         <div class="progress-label">
           <span>Ogólny postęp</span>
-          <span id="overall-pct">0%</span>
+          <span id="overall-pct">6%</span>
         </div>
         <div class="progress-bar">
-          <div class="progress-fill" id="overall-fill" style="width: 0%"></div>
+          <div class="progress-fill" id="overall-fill" style="width: 6%"></div>
         </div>
       </div>
 
-      <div class="modules-grid" role="list">
-        <button class="module-card" id="nav-alphabet" role="listitem">
-          <div class="module-icon blue">🔤</div>
+      <div class="modules-grid">
+        <button class="module-card" id="nav-alphabet">
+          <div class="module-icon blue">abc</div>
           <div class="module-info">
             <h3>Alfabet</h3>
             <p>Spółgłoski i samogłoski Hangul</p>
-            <div class="module-progress">
-              <div class="mini-bar">
-                <div class="mini-fill blue" id="progress-alphabet" style="width: 0%"></div>
-              </div>
-            </div>
+            <div class="mini-bar"><div class="mini-fill blue" id="progress-alphabet"></div></div>
           </div>
           <span class="module-arrow">›</span>
         </button>
 
-        <button class="module-card" id="nav-drawing" role="listitem">
+        <button class="module-card" id="nav-drawing">
           <div class="module-icon red">✏️</div>
           <div class="module-info">
             <h3>Pisanie</h3>
             <p>Ćwicz kreślenie znaków</p>
-            <div class="module-progress">
-              <div class="mini-bar">
-                <div class="mini-fill red" id="progress-drawing" style="width: 0%"></div>
-              </div>
-            </div>
+            <div class="mini-bar"><div class="mini-fill red" id="progress-drawing"></div></div>
           </div>
           <span class="module-arrow">›</span>
         </button>
 
-        <button class="module-card" id="nav-quiz" role="listitem">
+        <button class="module-card" id="nav-quiz">
           <div class="module-icon green">🎯</div>
           <div class="module-info">
             <h3>Quiz</h3>
             <p>Sprawdź swoją wiedzę</p>
-            <div class="module-progress">
-              <div class="mini-bar">
-                <div class="mini-fill green" id="progress-quiz" style="width: 0%"></div>
-              </div>
-            </div>
+            <div class="mini-bar"><div class="mini-fill green" id="progress-quiz"></div></div>
           </div>
           <span class="module-arrow">›</span>
         </button>
 
-        <button class="module-card" id="nav-flashcards" role="listitem">
+        <button class="module-card" id="nav-flashcards">
           <div class="module-icon orange">📚</div>
           <div class="module-info">
             <h3>Słownictwo</h3>
             <p>Fiszki z polskim tłumaczeniem</p>
-            <div class="module-progress">
-              <div class="mini-bar">
-                <div class="mini-fill orange" id="progress-flashcards" style="width: 0%"></div>
-              </div>
-            </div>
+            <div class="mini-bar"><div class="mini-fill orange" id="progress-flashcards"></div></div>
           </div>
           <span class="module-arrow">›</span>
         </button>
 
+        <button class="module-card" id="nav-pronunciation">
+          <div class="module-icon purple">🔊</div>
+          <div class="module-info">
+            <h3>Wymowa</h3>
+            <p>Posłuchaj koreańskiej wymowy</p>
+            <div class="mini-bar"><div class="mini-fill purple" id="progress-pronunciation" style="width: 30%"></div></div>
+          </div>
+          <span class="module-arrow">›</span>
+        </button>
+      </div>
+
+      <div class="theme-footer">
+        <button class="btn-theme" id="theme-toggle-btn">🌙 Ciemny motyw</button>
+      </div>
+    </section>
+
+    <section id="screen-pronunciation" class="screen">
+      <div class="nav-bar">
+        <button class="back-btn" id="back-to-home">‹</button>
+        <h1>Wymowa</h1>
+      </div>
+      <div class="pron-area">
+        <div class="pron-char-display">
+          <span class="pron-char-big" id="pron-practice-char">안녕하세요</span>
+        </div>
+        <button class="btn btn-primary" id="btn-speak-current">🔊 Posłuchaj</button>
+        <button class="btn btn-accent" id="pron-record-btn">🎤 Nagraj</button>
+        <div id="pron-recognition-result" class="pron-result"></div>
+      </div>
+    </section>
+  </div>
+  <script src="js/data.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
         <button class="module-card" id="nav-pronunciation" role="listitem">
           <div class="module-icon purple">🔊</div>
           <div class="module-info">

@@ -19,21 +19,27 @@ export class TTS {
     }
 
     return new Promise((resolve) => {
+      let resolved = false;
+      const done = (result) => {
+        if (resolved) return;
+        resolved = true;
+        this.ready = true;
+        resolve(result);
+      };
+
       const tryLoadVoices = () => {
+        if (resolved) return;
         const voices = this.synth.getVoices();
         this.koreanVoice = this._findKoreanVoice(voices);
         if (this.koreanVoice) {
-          this.ready = true;
           console.log('TTS: Korean voice loaded:', this.koreanVoice.name);
-          resolve(true);
+          done(true);
         } else if (this._voiceLoadAttempts < 10) {
           this._voiceLoadAttempts++;
           setTimeout(tryLoadVoices, 200);
         } else {
-          // No Korean voice found - TTS will still work with default voice
           console.warn('TTS: No Korean voice found, using default voice');
-          this.ready = true;
-          resolve(true);
+          done(true);
         }
       };
 

@@ -85,6 +85,17 @@ class KoreanApp {
       });
     });
 
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (this.currentScreen === 'lesson') {
+        if (e.key === 'ArrowLeft' && !this.dom.btnPrev.disabled) {
+          this.dom.btnPrev.click();
+        } else if (e.key === 'ArrowRight') {
+          this.dom.btnNext.click();
+        }
+      }
+    });
+
     // TTS button
     this.dom.btnSpeak.addEventListener('click', () => this._handleSpeak());
 
@@ -241,8 +252,17 @@ class KoreanApp {
 
     // Flashcard flip
     const flashcard = document.getElementById('flashcard');
+    flashcard.setAttribute('tabindex', '0');
+    flashcard.setAttribute('role', 'button');
+    flashcard.setAttribute('aria-label', 'Odwróć kartę');
     flashcard.addEventListener('click', () => {
       flashcard.classList.toggle('flipped');
+    });
+    flashcard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        flashcard.classList.toggle('flipped');
+      }
     });
 
     // Navigation buttons
@@ -393,16 +413,19 @@ class KoreanApp {
     const item = this.quizItems[this.quizIndex];
     const allItems = this.currentLesson.items;
 
-    // Generate 4 options including the correct one
+    // Generate wrong options, ensuring unique polish translations
     const wrongOptions = allItems
-      .filter((i) => i.korean !== item.korean)
+      .filter((i) => i.korean !== item.korean && i.polish !== item.polish)
       .sort(() => Math.random() - 0.5)
       .slice(0, 3);
 
     const options = this._shuffleArray([item, ...wrongOptions]);
+    const qNum = this.quizIndex + 1;
+    const qTotal = this.quizItems.length;
 
     content.innerHTML = `
       <div class="quiz-question">
+        <p style="font-size: 0.75rem; color: var(--text-light); margin-bottom: 8px;">Pytanie ${qNum} z ${qTotal}</p>
         <div class="korean-large">${item.korean}</div>
         <button class="btn-audio" id="quiz-speak" title="Odsłuchaj wymowę" style="margin: 8px auto; font-size: 0.75rem; padding: 8px 16px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">

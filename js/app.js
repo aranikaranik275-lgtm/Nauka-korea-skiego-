@@ -10,6 +10,7 @@ class KoreanApp {
     this.currentItemIndex = 0;
     this.quizAnswers = [];
     this.ttsRate = 0.8;
+    this.autoplay = false;
     this.progress = this._loadProgress();
   }
 
@@ -90,6 +91,17 @@ class KoreanApp {
     // Mic button
     this.dom.btnMic.addEventListener('click', () => this._handleMic());
 
+    // Autoplay setting
+    const autoplayToggle = document.getElementById('setting-autoplay');
+    if (autoplayToggle) {
+      this.autoplay = localStorage.getItem('korean_autoplay') === 'true';
+      autoplayToggle.checked = this.autoplay;
+      autoplayToggle.addEventListener('change', () => {
+        this.autoplay = autoplayToggle.checked;
+        localStorage.setItem('korean_autoplay', this.autoplay.toString());
+      });
+    }
+
     // Reset progress
     const btnReset = document.getElementById('btn-reset-progress');
     if (btnReset) {
@@ -141,6 +153,9 @@ class KoreanApp {
     this.audio.stopSpeaking();
     this.audio.stopListening();
     this._setAudioStatus('');
+
+    // Scroll to top on screen change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   _navigateBack() {
@@ -255,6 +270,11 @@ class KoreanApp {
 
     // Reset audio status
     this._setAudioStatus('');
+
+    // Autoplay pronunciation
+    if (this.autoplay) {
+      setTimeout(() => this._handleSpeak(), 300);
+    }
   }
 
   // ===== AUDIO HANDLING =====
@@ -384,6 +404,13 @@ class KoreanApp {
     content.innerHTML = `
       <div class="quiz-question">
         <div class="korean-large">${item.korean}</div>
+        <button class="btn-audio" id="quiz-speak" title="Odsłuchaj wymowę" style="margin: 8px auto; font-size: 0.75rem; padding: 8px 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          Odsłuchaj
+        </button>
         <p>Wybierz poprawne tłumaczenie:</p>
       </div>
       <div class="quiz-options" id="quiz-options">
@@ -398,6 +425,14 @@ class KoreanApp {
           .join('')}
       </div>
     `;
+
+    // Quiz TTS button
+    const quizSpeak = document.getElementById('quiz-speak');
+    if (quizSpeak) {
+      quizSpeak.addEventListener('click', () => {
+        this.audio.speak(item.audio || item.korean, { rate: this.ttsRate });
+      });
+    }
 
     // Bind option clicks
     document.querySelectorAll('.quiz-option').forEach((btn) => {
@@ -480,7 +515,12 @@ class KoreanApp {
     container.querySelectorAll('.alphabet-item').forEach((el) => {
       el.addEventListener('click', () => {
         const sound = el.dataset.sound;
-        this.audio.speak(sound, { rate: 0.7 });
+        el.classList.add('speaking');
+        this.audio.speak(sound, {
+          rate: 0.7,
+          onEnd: () => el.classList.remove('speaking'),
+          onError: () => el.classList.remove('speaking'),
+        }).catch(() => el.classList.remove('speaking'));
       });
     });
   }

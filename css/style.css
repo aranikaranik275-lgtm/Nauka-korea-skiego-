@@ -58,9 +58,9 @@ body {
   background: var(--primary);
   color: white;
   padding: 16px 20px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
   align-items: center;
-  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -71,6 +71,8 @@ body {
   font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  text-align: center;
+  grid-column: 2;
 }
 
 .header-back {
@@ -96,8 +98,10 @@ body {
 .header-progress {
   display: none;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
   font-size: 0.8rem;
+  grid-column: 3;
 }
 
 .header-progress.visible {
@@ -105,7 +109,7 @@ body {
 }
 
 .progress-bar-mini {
-  width: 80px;
+  width: 60px;
   height: 4px;
   background: rgba(255,255,255,0.3);
   border-radius: 2px;
@@ -367,7 +371,6 @@ body {
 }
 
 .flashcard-front, .flashcard-back {
-  position: absolute;
   width: 100%;
   min-height: 220px;
   backface-visibility: hidden;
@@ -387,6 +390,9 @@ body {
 .flashcard-back {
   background: var(--primary-light);
   transform: rotateY(180deg);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .flashcard-korean {
@@ -616,6 +622,7 @@ body {
 
 .quiz-option:disabled {
   cursor: default;
+  pointer-events: none;
 }
 
 .quiz-result {
@@ -671,6 +678,11 @@ body {
 
 .alphabet-item:active {
   transform: scale(0.95);
+}
+
+.alphabet-item.speaking {
+  border-color: var(--primary);
+  background: var(--primary-light);
 }
 
 .alphabet-item .char {
@@ -864,7 +876,7 @@ body {
   border: 1px solid #ffc107;
   border-radius: var(--radius-sm);
   padding: 12px 16px;
-  margin-bottom: 16px;
+  margin: 12px 20px 0;
   font-size: 0.8rem;
   color: #856404;
   display: none;

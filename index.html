@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Aplikacja do nauki języka koreańskiego - alfabet Hangul, słownictwo, wymowa">
+  <meta name="theme-color" content="#1a73e8">
+  <title>한국어 학습 — Nauka Koreańskiego</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <button class="header-back" id="header-back" aria-label="Wróć">←</button>
+      <h1 id="header-title">한국어 학습</h1>
+      <div class="header-progress" id="header-progress">
+        <span id="progress-text">1/10</span>
+        <div class="progress-bar-mini">
+          <div class="progress-bar-mini-fill" id="progress-fill-mini" style="width: 0%"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== BROWSER WARNING ===== -->
+    <div class="browser-warning" id="browser-warning"></div>
+
+    <!-- ===== HOME SCREEN ===== -->
+    <div class="screen active" id="screen-home">
+      <div class="welcome-card">
+        <h2>Witaj! 환영합니다!</h2>
+        <p>Rozpocznij naukę języka koreańskiego</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-lessons">0</div>
+          <div class="stat-label">Ukończone lekcje</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-words">0</div>
+          <div class="stat-label">Nauczone słowa</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-streak">0</div>
+          <div class="stat-label">Seria dni</div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Lekcje</h3>
+      <div class="lesson-list" id="lesson-list">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ===== ALPHABET SCREEN ===== -->
+    <div class="screen" id="screen-alphabet">
+      <div class="alphabet-section">
+        <h3>Samogłoski (모음)</h3>
+        <div class="alphabet-grid" id="vowel-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+      <div class="alphabet-section">
+        <h3>Spółgłoski (자음)</h3>
+        <div class="alphabet-grid" id="consonant-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LESSON SCREEN ===== -->
+    <div class="screen" id="screen-lesson">
+      <div class="lesson-header">
+        <h2 id="lesson-title"></h2>
+        <p id="lesson-subtitle"></p>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" id="lesson-progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div id="lesson-content">
+        <!-- Flashcard rendered by JS -->
+      </div>
+
+      <!-- Audio Controls -->
+      <div class="audio-controls">
+        <button class="btn-audio" id="btn-speak" title="Odsłuchaj wymowę">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          Odsłuchaj
+        </button>
+        <button class="btn-audio" id="btn-mic" title="Nagraj swoją wymowę">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+          Mów
+        </button>
+      </div>
+
+      <div class="audio-status" id="audio-status"></div>
+
+      <!-- Speed Control -->
+      <div class="speed-control">
+        <label>Prędkość:</label>
+        <button class="speed-btn" data-rate="0.5">0.5x</button>
+        <button class="speed-btn active" data-rate="0.8">0.8x</button>
+        <button class="speed-btn" data-rate="1">1x</button>
+        <button class="speed-btn" data-rate="1.2">1.2x</button>
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" id="btn-prev">← Poprzednia</button>
+        <button class="btn btn-primary" id="btn-next">Następna ➜</button>
+      </div>
+    </div>
+
+    <!-- ===== QUIZ SCREEN ===== -->
+    <div class="screen" id="screen-quiz">
+      <div id="quiz-content">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS SCREEN ===== -->
+    <div class="screen" id="screen-settings">
+      <div class="settings-group">
+        <div class="settings-group-title">Audio</div>
+        <div class="settings-item">
+          <div>
+            <label>Automatyczne odtwarzanie</label>
+            <div class="description">Odtwarzaj wymowę przy każdej nowej karcie</div>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="setting-autoplay">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Postęp</div>
+        <div class="settings-item">
+          <div>
+            <label>Resetuj postęp</label>
+            <div class="description">Wyzeruj wszystkie dane nauki</div>
+          </div>
+          <button class="btn btn-secondary" id="btn-reset-progress" style="font-size: 0.8rem; padding: 8px 16px;">
+            Resetuj
+          </button>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Informacje</div>
+        <div class="settings-item">
+          <div>
+            <label>Wersja</label>
+          </div>
+          <span style="color: var(--text-secondary); font-size: 0.85rem;">1.0.0</span>
+        </div>
+        <div class="settings-item">
+          <div>
+            <label>Wymagania</label>
+            <div class="description">Chrome lub Edge dla funkcji audio (TTS + mikrofon)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BOTTOM NAVIGATION ===== -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-screen="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Start
+      </button>
+      <button class="nav-item" data-screen="alphabet">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 7 4 4 20 4 20 7"></polyline>
+          <line x1="9" y1="20" x2="15" y2="20"></line>
+          <line x1="12" y1="4" x2="12" y2="20"></line>
+        </svg>
+        Hangul
+      </button>
+      <button class="nav-item" data-screen="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        Ustawienia
+      </button>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
